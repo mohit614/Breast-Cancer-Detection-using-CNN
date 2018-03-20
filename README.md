@@ -1,7 +1,7 @@
 # Breast-Cancer-Detection-using-Convolutional Neural Network
 
 # Result
-	95% accuracy in correct classifying breast cancer mammographic images into 7 Classes
+	Upto 95% accuracy in correct classifying breast cancer mammographic images into 7 Classes
 i.e. calcification, well-defined/circumscribed masses, spiculated masses, ill-defined masses, architectural distortion, asymmetry, normal image.
 
 # Purpose:
