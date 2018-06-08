@@ -1,0 +1,52 @@
+
+val lines = sc.textFile("test/simplilearn/bankmarketingdata.csv")
+val bank = lines.map(x => x.split(";"))
+val bankf = bank.mapPartitionsWithIndex { (idx, iter) => if (idx == 0) iter.drop(1) else iter } 
+
+case class Bank(age:Int, job:String, marital:String, education:String, default:String, balance:Int,
+housing:String, loan:String, contact:String, day:Int, month: String, duration:Int, campaign:Int, pdays:Int,
+previous:Int, poutcome:String, y:String)
+
+val bankrdd = bankf.map(
+ x => Bank(x(0).toInt,
+ x(1).replaceAll("\"","")
+ ,x(2).replaceAll("\"","")
+ ,x(3).replaceAll("\"","")
+ ,x(4).replaceAll("\"","")
+ ,x(5).toInt
+ ,x(6).replaceAll("\"","")
+ ,x(7).replaceAll("\"","")
+ ,x(8).replaceAll("\"","")
+ ,x(9).toInt
+ ,x(10).replaceAll("\"","") 
+ ,x(11).toInt
+ ,x(12).toInt
+ ,x(13).toInt
+ ,x(14).toInt
+ ,x(15).replaceAll("\"","")
+ ,x(16).replaceAll("\"","")
+ )
+ )
+ 
+val bankDF = bankrdd.toDF()
+bankDF.registerTempTable("bank")
+
+val success = sqlContext.sql("select (a.subscribed/b.total)*100 as success_percent from (select count(*)
+
+val failure = sqlContext.sql("select (a.not_subscribed/b.total)*100 as failure_percent from (select
+count(*) as not_subscribed from bank where y='no') a,(select count(*) as total from bank) b").show()
+
+bankDF.select(max($"age")).show()
+bankDF.select(min($"age")).show()
+
+bankDF.select(avg($"balance")).show()
+val median = sqlContext.sql("SELECT percentile_approx(balance, 0.5) FROM bank").show()
+
+val age = sqlContext.sql("select age, count(*) as number from bank where y='yes' group by age order by
+number desc ").show()
+
+val marital = sqlContext.sql("select marital, count(*) as number from bank where y='yes' group by
+marital order by number desc ").show() 
+
+val age_marital = sqlContext.sql("select age, marital, count(*) as number from bank where y='yes' group
+by age,marital order by number desc ").show()
